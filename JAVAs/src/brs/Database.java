@@ -3,6 +3,7 @@ package brs;
 import java.util.*;
 
 
+
 public class Database {
     private Vector<Customer> list = new Vector<Customer>();
     private Vector<Symbol> symbs = new Vector<Symbol>();
@@ -11,6 +12,7 @@ public class Database {
     static GTC gtc = new GTC();
     static MPO mpo = new MPO();
     static IOC ioc = new IOC();
+
 
     private static Database theDatabase = new Database();
     public static Database getDB() {
