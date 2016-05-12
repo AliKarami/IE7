@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS Log (
 CREATE TABLE IF NOT EXISTS DepReqs (
   cstmr_id INT NOT NULL,
   amount INT NOT NULL,
+  DepReq_id INT NOT NULL  PRIMARY KEY IDENTITY,
   CONSTRAINT fk_DepReqs_1
     FOREIGN KEY (cstmr_id)
     REFERENCES Customer (cstmr_id)
