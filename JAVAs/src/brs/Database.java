@@ -175,7 +175,7 @@ public class Database {
                 }
             } else
                 return -2; //Unknown user id
-        } catch (Exception ex) {System.err.println("err on withdraw cstmr");}
+        } catch (Exception ex) {System.err.println("err on withdraw cstmr"); return -2;}
 
     }
 
@@ -191,7 +191,7 @@ public class Database {
                 return rs;
             else
                 return null;
-        } catch (Exception ex) {System.err.println("err on getsymb")}
+        } catch (Exception ex) {System.err.println("err on getsymb"); return null;}
     }
 
     public ResultSet getSymbs () {//return symbs;
