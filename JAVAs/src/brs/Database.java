@@ -209,4 +209,22 @@ public class Database {
 
     }
 
+    public void add_property(int id,String name,int quantity){
+        try {
+            hh.executeUpdate("INSERT INTO Properties (cstmr_id,symb_name,amount) values " + id + "," + name + "," + quantity + ")");
+        } catch (Exception ex) {System.err.println("add property err");}
+    }
+
+    public void add_request(int id,String name,String type,boolean forSale,int quantity,int price,int state){
+
+    }
+
+    public int get_propertyAmount(int id,String name){
+        ResultSet rs = hh.executeQuery("SELECT * FROM Properties WHERE cstmr_id=" + id + " and symb_name=" + name);
+        try {
+            if(rs.next())
+                return Integer.parseInt(rs.getString("amount");
+            return -1;
+        } catch (Exception ex) {System.err.println("add property err");return -1;}
+    }
 }

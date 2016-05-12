@@ -21,18 +21,11 @@ CREATE TABLE IF NOT EXISTS DepReqs (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
-CREATE TABLE IF NOT EXISTS Property (
-  prop_id INT NOT NULL PRIMARY KEY IDENTITY,
-  symb_name VARCHAR(10) NOT NULL,
-  amount INT NOT NULL,
-  CONSTRAINT fk_Property_1
-    FOREIGN KEY (symb_name)
-    REFERENCES Symbol (symb_name)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE);
 
 CREATE TABLE IF NOT EXISTS Properties (
-  prop_id INT NOT NULL,
+   prop_id INT NOT NULL PRIMARY KEY IDENTITY,
+    symb_name VARCHAR(10) NOT NULL,
+    amount INT NOT NULL,
   cstmr_id INT NOT NULL,
   CONSTRAINT fk_Properties_1
     FOREIGN KEY (cstmr_id)
@@ -40,10 +33,10 @@ CREATE TABLE IF NOT EXISTS Properties (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_Properties_2
-    FOREIGN KEY (prop_id)
-    REFERENCES Property (prop_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+     FOREIGN KEY (symb_name)
+     REFERENCES Symbol (symb_name)
+     ON DELETE NO ACTION
+     ON UPDATE CASCADE);
 
 CREATE TABLE IF NOT EXISTS Requests (
   req_id INT NOT NULL PRIMARY KEY IDENTITY,

@@ -1,34 +1,41 @@
 package brs;
 
+import java.sql.*;
+
 /**
  * Created by ali on 2/25/16.
  */
 public class GTC implements Type {
     @Override
     public String Sell(int id_, String name_, int price_, int quantity_, Database db_) {
-        Customer seller = db_.get_user(id_);
-        Symbol stock = db_.get_symbol(name_);
+        ResultSet seller = db_.get_user(id_);
+        ResultSet stock = db_.get_symbol(name_);
         if (id_ == 1) { //handle admins POWER!!!
             if (stock == null) {
                 db_.add_symbol(name_);
                 stock = db_.get_symbol(name_);
             }
-            seller.property.put(name_,quantity_);
+           // seller.property.put(name_,quantity_);
+            db_.add_property(id_,name_,quantity_);
         }
-        Request req = new Request(seller,stock,"GTC",true,quantity_,price_);
-        if (seller == null)
-            return "Unknown user id";
-        else if (seller.property.get(name_) < quantity_) {
-            seller.refused.add(req);
-            return "Not enough share";
-        }
-        else if (stock == null) {
-            return "Invalid symbol id";
-        }
-        else {
-            seller.inAct.add(req);
-            return add_sellReq(req);
-        }
+        //Request req = new Request(seller,stock,"GTC",true,quantity_,price_);
+        try{
+            if (!seller.next())
+                return "Unknown user id";
+            else if (!stock.next()) {
+                return "Invalid symbol id";
+            }
+            else if (db_.get_propertyAmount(id_,name_) < quantity_) {
+              //  seller.refused.add(req);
+                db_.add_request(id_,name_,"GTC",true,quantity_,price_,-1);
+                return "Not enough share";
+            }
+            else {
+                //seller.inAct.add(req);
+                db_.add_request(id_,name_,"GTC",true,quantity_,price_,-1);
+                return add_sellReq(req);
+            }
+        }catch (Exception ex){return "add property err";}
     }
 
     @Override
