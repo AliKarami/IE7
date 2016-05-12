@@ -13,6 +13,7 @@ public class Database {
     static MPO mpo = new MPO();
     static IOC ioc = new IOC();
 
+    HSQLHandler hh = new HSQLHandler();
 
     private static Database theDatabase = new Database();
     public static Database getDB() {
@@ -20,6 +21,7 @@ public class Database {
     }
 
     Database() {
+        try {hh.init_tables();} catch (Exception ex) {System.err.println("init tables failed.");}
         Customer Admin = new Customer(1,"admin","");
         list.add(Admin);
     }
