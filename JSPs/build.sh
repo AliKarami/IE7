@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-APP_CONTEXT=bourse
-
-rm -rf $APP_CONTEXT.war
+rm -rf bourse.war
 
 cd target
-jar -cvf ../$APP_CONTEXT.war ./*
+jar -cvf ../bourse.war ./*
