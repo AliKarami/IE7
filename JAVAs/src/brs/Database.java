@@ -136,41 +136,77 @@ public class Database {
     }
 
     public boolean deposit_customer(int id_,int amount){
-        for (Customer cstmr : list) {
-            if (cstmr.id==id_) {
-                cstmr.fund += amount;
+//        for (Customer cstmr : list) {
+//            if (cstmr.id==id_) {
+//                cstmr.fund += amount;
+//                return true;
+//            }
+//        }
+//        return false;
+        try {
+
+            if (hh.executeUpdate("UPDATE Customer SET fund = fund +" + amount + " WHERE cstmr_id=" + id_) == 1)
                 return true;
-            }
-        }
-        return false;
+            return false;
+        } catch (Exception ex) {System.err.println("err depositCstmr"); return false;}
     }
     public int withdraw_customer(int id_,int amount) {
-        for (Customer cstmr : list) {
-            if (cstmr.id==id_) {
-                if (cstmr.fund >= amount) {
-                    cstmr.fund -= amount;
-                    return 0; // Successful
+//        for (Customer cstmr : list) {
+//            if (cstmr.id==id_) {
+//                if (cstmr.fund >= amount) {
+//                    cstmr.fund -= amount;
+//                    return 0; // Successful
+//                } else {
+//                    return -1; //Not enough money
+//                }
+//            }
+//        }
+//        return -2; //Unknown user id
+        ResultSet rs = get_user(id_);
+        try {
+            if (rs.next()) {
+                int current_fund = Integer.parseInt(rs.getString("fund"));
+                if (current_fund >= amount) {
+                    if (hh.executeUpdate("UPDATE Customer SET fund = fund -" + amount + " WHERE cstmr_id=" + id_) == 1)
+                        return 0; // Successful
+                    return -2;
                 } else {
                     return -1; //Not enough money
                 }
-            }
-        }
-        return -2; //Unknown user id
+            } else
+                return -2; //Unknown user id
+        } catch (Exception ex) {System.err.println("err on withdraw cstmr");}
+
     }
 
-    public Symbol get_symbol(String name_) {
-        for (Symbol sym : symbs) {
-            if (sym.name.equals(name_))
-                return sym;
-        }
-        return null;
+    public ResultSet get_symbol(String name_) {
+//        for (Symbol sym : symbs) {
+//            if (sym.name.equals(name_))
+//                return sym;
+//        }
+//        return null;
+        ResultSet rs = hh.executeQuery("SELECT * FROM Customer WHERE symb_name=" + name_);
+        try {
+            if (rs.next())
+                return rs;
+            else
+                return null;
+        } catch (Exception ex) {System.err.println("err on getsymb")}
     }
 
-    public Vector<Symbol> getSymbs () {return symbs;}
+    public ResultSet getSymbs () {//return symbs;
+        return hh.executeQuery("SELECT * FROM Symbol");
+    }
 
-    public void add_symbol(String name_) {
-        Symbol newSymbl = new Symbol(name_);
-        symbs.add(newSymbl);
+    public boolean add_symbol(String name_) {
+//        Symbol newSymbl = new Symbol(name_);
+//        symbs.add(newSymbl);
+        try {
+            if (hh.executeUpdate("INSERT INTO Symbol values ("  + name_ + ")") == 1)
+                return true;
+            return false;
+        } catch (Exception ex) {System.err.println("add symbol err"); return false;}
+
     }
 
 }
