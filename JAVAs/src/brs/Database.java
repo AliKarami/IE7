@@ -126,11 +126,8 @@ public class Database {
         try {
             if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0)") == 1)
                 return true;
-            PrintWriter writer = new PrintWriter("1.txt", "UTF-8");
-            writer.close();
             return false;
-        } catch (Exception ex) {System.err.println("add cstmr err"); try {PrintWriter writer = new PrintWriter("2.txt", "UTF-8");
-            writer.close();}catch(Exception ex2){} return false;}
+        } catch (Exception ex) {System.err.println("add cstmr err"); return false;}
 
     }
 

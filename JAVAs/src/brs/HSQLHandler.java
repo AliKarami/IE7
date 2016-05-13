@@ -9,7 +9,7 @@ public class HSQLHandler {
     public static void init_tables() {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
         } catch (ClassNotFoundException ex) {
             System.err.println("Unable to load HSQLDB JDBC driver");
         }
@@ -17,7 +17,7 @@ public class HSQLHandler {
 
         try {
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
             Statement stmt = con.createStatement();
             BufferedReader in = new BufferedReader(new FileReader("init.sql"));
             String str;
@@ -27,7 +27,14 @@ public class HSQLHandler {
             }
             in.close();
             stmt.executeUpdate(sb.toString());
-            con.close();
+            if (con != null && !con.isClosed()) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                        // Don't throw from here or you'll lose any return/exception from above
+                        System.err.println("Failed to close connection" + ex);
+                    }
+                }
         } catch (Exception e) {
             System.err.println("Failed to Execute" + " init.sql" +". The error is"+ e.getMessage());
         }
@@ -36,12 +43,20 @@ public class HSQLHandler {
     public ResultSet executeQuery(String sql) {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
             Statement stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sql);
+            if (con != null && !con.isClosed()) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    // Don't throw from here or you'll lose any return/exception from above
+                    System.err.println("Failed to close connection" + ex);
+                }
+            }
             return rs;
         } catch (Exception ex) {
             System.err.println("Unable to load HSQLDB JDBC driver");
@@ -52,11 +67,18 @@ public class HSQLHandler {
     public int executeUpdate(String sql) {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
             Statement stmt = con.createStatement();
-
+            if (con != null && !con.isClosed()) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    // Don't throw from here or you'll lose any return/exception from above
+                    System.err.println("Failed to close connection" + ex);
+                }
+            }
             return stmt.executeUpdate(sql);
         } catch (Exception ex) {
             System.err.println("Unable to load HSQLDB JDBC driver");
