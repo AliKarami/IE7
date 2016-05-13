@@ -6,14 +6,9 @@ import java.util.*;
 
 
 public class Database {
-    private Vector<Customer> list = new Vector<Customer>();
-    private Vector<Symbol> symbs = new Vector<Symbol>();
-    private Vector<String> log = new Vector<String>();
-    private Vector<Integer[]> DepReqs = new Vector<Integer[]>();
     static GTC gtc = new GTC();
     static MPO mpo = new MPO();
     static IOC ioc = new IOC();
-
     HSQLHandler hh = new HSQLHandler();
 
     private static Database theDatabase = new Database();
@@ -22,10 +17,10 @@ public class Database {
     }
 
     Database() {
-            hh.init_tables();
-            //Customer Admin = new Customer(1,"admin","");
-            //list.add(Admin);
-            hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0)");
+        hh.init_tables();
+        //Customer Admin = new Customer(1,"admin","");
+        //list.add(Admin);
+        hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0)");
     }
 
 //    public Customer get_user(int id_){
@@ -115,8 +110,8 @@ public class Database {
 
     public void decDR(int i) {
 //        DepReqs.remove(i);
-          if (hh.executeUpdate("DELETE FROM DepReqs WHERE DepReq_id=" + i) != 1)
-              System.err.println("decDepReq err");
+        if (hh.executeUpdate("DELETE FROM DepReqs WHERE DepReq_id=" + i) != 1)
+            System.err.println("decDepReq err");
     }
 
     public boolean add_customer(int id_,String name_,String family_) {
@@ -223,8 +218,20 @@ public class Database {
         ResultSet rs = hh.executeQuery("SELECT * FROM Properties WHERE cstmr_id=" + id + " and symb_name=" + name);
         try {
             if(rs.next())
-                return Integer.parseInt(rs.getString("amount");
+                return Integer.parseInt(rs.getString("amount"));
             return -1;
         } catch (Exception ex) {System.err.println("add property err");return -1;}
+    }
+
+    public ResultSet getSeller(String name_) {
+        try {
+            return Database.getDB().hh.executeQuery("Select * FROM Sellers WHERE symb_name='" + name_ + "' AND state=0 ORDER BY fund ASC");
+        } catch (Exception ex) {System.out.println("err on getSeller " + name_); return null;}
+    }
+
+    public ResultSet getBuyer(String name_) {
+        try {
+            return Database.getDB().hh.executeQuery("Select * FROM Buyers WHERE symb_name='" + name_ + "' AND state=0 ORDER BY fund DESC");
+        } catch (Exception ex) {System.out.println("err on getBuyer " + name_); return null;}
     }
 }

@@ -15,7 +15,7 @@ public class GTC implements Type {
                 db_.add_symbol(name_);
                 stock = db_.get_symbol(name_);
             }
-           // seller.property.put(name_,quantity_);
+            // seller.property.put(name_,quantity_);
             db_.add_property(id_,name_,quantity_);
         }
         //Request req = new Request(seller,stock,"GTC",true,quantity_,price_);
@@ -26,123 +26,178 @@ public class GTC implements Type {
                 return "Invalid symbol id";
             }
             else if (db_.get_propertyAmount(id_,name_) < quantity_) {
-              //  seller.refused.add(req);
+                //  seller.refused.add(req);
                 db_.add_request(id_,name_,"GTC",true,quantity_,price_,-1);
                 return "Not enough share";
             }
             else {
                 //seller.inAct.add(req);
-                db_.add_request(id_,name_,"GTC",true,quantity_,price_,-1);
-                return add_sellReq(req);
+                db_.add_request(id_,name_,"GTC",true,quantity_,price_,0);
+                return add_sellReq(name_);
             }
         }catch (Exception ex){return "add property err";}
     }
 
     @Override
-    public String add_sellReq(Request req_) {
-        req_.symbl.getSeller().add(req_);
-        if (!(req_.equals(req_.symbl.getSeller().iterator().next())))
-            return "Order is queued";
-        else {
-            StringBuilder sb = new StringBuilder("");
-            while (true) {
-                String current = doDeal(req_);
-                if (current.equals("nothing Dealed!"))
-                    break;
-                else {
-                    sb.append(current + "\n");
-                }
-            }
-            String result = sb.toString();
-            if (result.equals(""))
+    public String add_sellReq(String symbol)  {
+        // req_.symbl.getSeller().add(req_);
+        ResultSet rs = Database.getDB().getSeller(symbol); // to be implemented
+        // if (!(req_.equals(req_.symbl.getSeller().iterator().next())))
+        try{
+            if(!rs.next())
                 return "Order is queued";
-            else
-                return result;
-        }
+            else {
+                StringBuilder sb = new StringBuilder("");
+                while (true) {
+                    String current = doDeal(symbol);
+                    if (current.equals("nothing Dealed!"))
+                        break;
+                    else {
+                        sb.append(current + "\n");
+                    }
+                }
+                String result = sb.toString();
+                if (result.equals(""))
+                    return "Order is queued";
+                else
+                    return result;
+            }
+        }catch(Exception ex){return "Order Sql Error";}
+
     }
 
     @Override
     public String Buy(int id_, String name_, int price_, int quantity_, Database db_) {
-        Customer buyer = db_.get_user(id_);
-        Symbol stock = db_.get_symbol(name_);
-        Request req = new Request(buyer,stock,"GTC",false,quantity_,price_);
-        if (buyer == null)
-            return "Unknown user id";
-        else if (buyer.fund < (price_)*(quantity_)) {
-            buyer.refused.add(req);
-            return "Not enough money";
-        }
-        else if (stock == null)
-            return "Invalid symbol id";
-        else {
-            buyer.inAct.add(req);
-            return add_buyReq(req);
-        }
-    }
-
-    @Override
-    public String add_buyReq(Request req_) {
-        req_.symbl.getBuyer().add(req_);
-        if (!(req_.equals(req_.symbl.getBuyer().iterator().next())))
-            return "Order is queued";
-        else {
-            StringBuilder sb = new StringBuilder("");
-            while (true) {
-                String current = doDeal(req_);
-                if (current.equals("nothing Dealed!"))
-                    break;
-                else {
-                    sb.append(current + "\n");
-                }
+        ResultSet buyer = db_.get_user(id_);
+        ResultSet stock = db_.get_symbol(name_);
+        try{
+            if (!buyer.next())
+                return "Unknown user id";
+            else if (!stock.next()) {
+                return "Invalid symbol id";
             }
-            String result = sb.toString();
-            if (result.equals(""))
-                return "Order is queued";
-            else
-                return result;
-        }
+            else if (Integer.parseInt(buyer.getString("fund")) < (price_)*(quantity_)) {
+                //  seller.refused.add(req);
+                db_.add_request(id_,name_,"GTC",false,quantity_,price_,-1);
+                return "Not enough money";
+            }
+            else {
+                //seller.inAct.add(req);
+                db_.add_request(id_,name_,"GTC",false,quantity_,price_,0);
+                return add_buyReq(name_);
+            }
+        }catch (Exception ex){return "add property err";}
     }
 
     @Override
-    public String doDeal(Request req_) {
-        if (!req_.symbl.getBuyer().iterator().hasNext() || !req_.symbl.getSeller().iterator().hasNext())
+    public String add_buyReq(String symbol) {
+        //req_.symbl.getBuyer().add(req_);
+        ResultSet rs = Database.getDB().getBuyer(symbol);
+        /*if (!(req_.equals(req_.symbl.getBuyer().iterator().next())))*/
+        try{
+            if(!rs.next())
+                return "Order is queued";
+            else {
+                StringBuilder sb = new StringBuilder("");
+                while (true) {
+
+                    String current = doDeal(symbol);
+                    if (current.equals("nothing Dealed!"))
+                        break;
+                    else {
+                        sb.append(current + "\n");
+                    }
+
+                }
+                String result = sb.toString();
+                if (result.equals(""))
+                    return "Order is queued";
+                else
+                    return result;
+            }
+        }catch(Exception ex){return "doDeal fucked up";}
+
+    }
+
+    @Override
+    public String doDeal(String symbol) throws SQLException {
+        ResultSet rs1 = Database.getDB().getBuyer(symbol);
+        ResultSet rs2 = Database.getDB().getSeller(symbol);
+        /* if (!req_.symbl.getBuyer().iterator().hasNext() || !req_.symbl.getSeller().iterator().hasNext())
+            return "nothing Dealed!";*/
+        if(!rs1.next() || !rs2.next()){
             return "nothing Dealed!";
-        Request firstBuyReq = req_.symbl.getBuyer().iterator().next();
-        Request firstSellReq = req_.symbl.getSeller().iterator().next();
-        if (firstBuyReq.price >= firstSellReq.price)
+        }
+        ResultSet rs3 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id =" + rs1.getString("req_id"));
+        ResultSet rs4 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id =" + rs2.getString("req_id"));
+        /*Request firstBuyReq = req_.symbl.getBuyer().iterator().next();
+        Request firstSellReq = req_.symbl.getSeller().iterator().next();*/
+        int buy_price = Integer.parseInt(rs3.getString("price"));
+        int sell_price = Integer.parseInt(rs4.getString("price"));
+        int buy_quantity = Integer.parseInt(rs3.getString("quantity"));
+        int sell_quantity = Integer.parseInt(rs4.getString("quantity"));
+        int buyer_id = Integer.parseInt(rs1.getString("buyer_id"));
+        int seller_id = Integer.parseInt(rs1.getString("seller_id"));
+        if ( buy_price >= sell_price )
         {
-            if (firstBuyReq.quantity > firstSellReq.quantity) {
-                int moneyExchanged = (firstSellReq.quantity) * (firstBuyReq.price);
-                firstBuyReq.cstmr.fund -= moneyExchanged;
-                firstSellReq.cstmr.fund += moneyExchanged;
-                firstBuyReq.quantity -= firstSellReq.quantity;
-                req_.symbl.getSeller().remove(firstSellReq);
-                firstSellReq.cstmr.done.add(firstSellReq);
-                firstSellReq.cstmr.inAct.remove(firstSellReq);
-                Database.getDB().add2log(firstBuyReq.cstmr.id + "," + firstSellReq.cstmr.id + "," + firstSellReq.symbl + ",GTC," + firstSellReq.quantity + "," + firstBuyReq.cstmr.fund + "," + firstSellReq.cstmr.fund);
-                return firstSellReq.cstmr.id + " sold " + firstSellReq.quantity + " shares of " + firstSellReq.symbl + " @" + firstBuyReq.price + " to " + firstBuyReq.cstmr.id;
-            } else if (firstBuyReq.quantity == firstSellReq.quantity) {
-                int moneyExchanged = (firstSellReq.quantity) * (firstBuyReq.price);
-                firstBuyReq.cstmr.fund -= moneyExchanged;
-                firstSellReq.cstmr.fund += moneyExchanged;
-                req_.symbl.getBuyer().remove(firstBuyReq);
-                req_.symbl.getSeller().remove(firstSellReq);
-                firstBuyReq.cstmr.done.add(firstBuyReq);
-                firstSellReq.cstmr.done.add(firstSellReq);
-                firstBuyReq.cstmr.inAct.remove(firstBuyReq);
-                firstSellReq.cstmr.inAct.remove(firstSellReq);
-                Database.getDB().add2log(firstBuyReq.cstmr.id + "," + firstSellReq.cstmr.id + "," + firstSellReq.symbl + ",GTC," + firstSellReq.quantity + "," + firstBuyReq.cstmr.fund + "," + firstSellReq.cstmr.fund);
-                return firstSellReq.cstmr.id + " sold " + firstSellReq.quantity + " shares of " + firstSellReq.symbl + " @" + firstBuyReq.price + " to " + firstBuyReq.cstmr.id;
+            //if (firstBuyReq.quantity > firstSellReq.quantity) {
+            if( buy_quantity > sell_quantity ){
+                //int moneyExchanged = (firstSellReq.quantity) * (firstBuyReq.price);
+                int moneyExchanged = (sell_quantity) * (buy_price);
+                //firstBuyReq.cstmr.fund -= moneyExchanged;
+                if(Database.getDB().withdraw_customer(buyer_id,moneyExchanged) != 0){
+                    return "nothing Dealed! (Not enough Money)";
+                }
+                //firstSellReq.cstmr.fund += moneyExchanged;
+                Database.getDB().deposit_customer(seller_id,moneyExchanged);
+                //firstBuyReq.quantity -= firstSellReq.quantity;
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
+                //req_.symbl.getSeller().remove(firstSellReq);
+
+                // firstSellReq.cstmr.done.add(firstSellReq);
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs2.getString("req_id"));
+                //firstSellReq.cstmr.inAct.remove(firstSellReq);
+                Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
+                return seller_id + " sold " + sell_quantity + " shares of " + symbol + " @" + buy_price + " to " + buyer_id;
+            }// else if (firstBuyReq.quantity == firstSellReq.quantity) {
+            else if (buy_quantity == sell_quantity) {
+                int moneyExchanged = (sell_quantity) * (buy_price);
+                //firstBuyReq.cstmr.fund -= moneyExchanged;
+                if(Database.getDB().withdraw_customer(buyer_id,moneyExchanged) != 0){
+                    return "nothing Dealed! (Not enough Money)";
+                }
+                //firstSellReq.cstmr.fund += moneyExchanged;
+                Database.getDB().deposit_customer(seller_id,moneyExchanged);
+                //req_.symbl.getBuyer().remove(firstBuyReq);
+
+                // req_.symbl.getSeller().remove(firstSellReq);
+
+                //firstBuyReq.cstmr.done.add(firstBuyReq);
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs1.getString("req_id"));
+                //firstSellReq.cstmr.done.add(firstSellReq);
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs2.getString("req_id"));
+//                firstBuyReq.cstmr.inAct.remove(firstBuyReq);
+//                firstSellReq.cstmr.inAct.remove(firstSellReq);
+                Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
+                return seller_id + " sold " + sell_quantity + " shares of " + symbol + " @" + buy_price + " to " + buyer_id;
             } else {
-                int moneyExchanged = (firstSellReq.quantity) * (firstBuyReq.price);
-                firstBuyReq.cstmr.fund -= moneyExchanged;
-                firstSellReq.cstmr.fund += moneyExchanged;
-                firstSellReq.quantity -= firstSellReq.quantity;
-                req_.symbl.getBuyer().remove(firstBuyReq);
-                firstBuyReq.cstmr.done.add(firstBuyReq);
-                firstBuyReq.cstmr.inAct.remove(firstBuyReq);
-                Database.getDB().add2log(firstBuyReq.cstmr.id + "," + firstSellReq.cstmr.id + "," + firstSellReq.symbl + ",GTC," + firstSellReq.quantity + "," + firstBuyReq.cstmr.fund + "," + firstSellReq.cstmr.fund);
-                return firstSellReq.cstmr.id + " sold " + firstSellReq.quantity + " shares of " + firstSellReq.symbl + " @" + firstBuyReq.price + " to " + firstBuyReq.cstmr.id;
+                int moneyExchanged = (sell_quantity) * (buy_price);
+                //firstBuyReq.cstmr.fund -= moneyExchanged;
+                if(Database.getDB().withdraw_customer(buyer_id,moneyExchanged) != 0){
+                    return "nothing Dealed! (Not enough Money)";
+                }
+                // firstSellReq.cstmr.fund += moneyExchanged;
+                Database.getDB().deposit_customer(seller_id,moneyExchanged);
+                //firstSellReq.quantity -= firstBuyReq.quantity;
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET quantity=quantity-" + buy_quantity + " WHERE req_id=" + rs2.getString("req_id") );
+                //req_.symbl.getBuyer().remove(firstBuyReq);
+
+                //firstBuyReq.cstmr.done.add(firstBuyReq);
+                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs1.getString("req_id"));
+                // firstBuyReq.cstmr.inAct.remove(firstBuyReq);
+
+                Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
+                return seller_id + " sold " + sell_quantity + " shares of " + symbol + " @" + buy_price + " to " + buyer_id;
             }
         } else
             return "nothing Dealed!";
