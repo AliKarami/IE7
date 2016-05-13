@@ -1,9 +1,11 @@
 <%@page import="java.util.*"%>
+<%@page import="java.sql.*"%>
 <%@page import="brs.*"%>
 
 <%@include file="header.jsp"%>
 
-    <% PriorityQueue<Request> qu=(PriorityQueue<Request>)request.getAttribute("Queue"); %>
+    <% ResultSet qu=(ResultSet)request.getAttribute("Queue"); %>
+    <% ResultSet user=(ResultSet)request.getAttribute("User"); %>
     <% String ins=(String)request.getAttribute("instrument"); %>
     <% String sb=(String)request.getAttribute("SB"); %>
 
@@ -30,26 +32,26 @@
             </td>
         </tr>
       <%
-    	for (Request e : qu) { 
+    	while (qu.next()) {
     	%>
     	<tr>
             <td>
-             <%= e.cstmr.id %>
+             <%= qu.getString("cstmr_id") %>
             </td>
     		<td>
-    		 <%= e.cstmr.name %>
+    		 <%= user.getString("name") %>
     		</td>
             <td>
-             <%= e.cstmr.family %>
+             <%= user.getString("family") %>
             </td>
             <td>
-             <%= e.type %>
+             <%= qu.getString("type") %>
             </td>
             <td>
-             <%= e.quantity %>
+             <%= qu.getString("quantity") %>
             </td>
             <td>
-             <%= e.price %>
+             <%= qu.getString("price") %>
             </td>
     	</tr>
     	<%

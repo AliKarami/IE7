@@ -1,5 +1,6 @@
 package brs;
 
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -7,9 +8,9 @@ import java.util.*;
 
 public class Database {
     static GTC gtc = new GTC();
-    //static MPO mpo = new MPO();
-    //static IOC ioc = new IOC();
-    HSQLHandler hh = new HSQLHandler();
+//    static MPO mpo = new MPO();
+//    static IOC ioc = new IOC();
+    static HSQLHandler hh = new HSQLHandler();
 
     private static Database theDatabase = new Database();
     public static Database getDB() {
@@ -123,10 +124,13 @@ public class Database {
 //        list.add(newcstmr);
 //        return true;
         try {
-            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + "," + name_ + "," + family_ + ",0)") == 1)
+            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0)") == 1)
                 return true;
+            PrintWriter writer = new PrintWriter("1.txt", "UTF-8");
+            writer.close();
             return false;
-        } catch (Exception ex) {System.err.println("add cstmr err"); return false;}
+        } catch (Exception ex) {System.err.println("add cstmr err"); try {PrintWriter writer = new PrintWriter("2.txt", "UTF-8");
+            writer.close();}catch(Exception ex2){} return false;}
 
     }
 
@@ -140,7 +144,7 @@ public class Database {
 //        return false;
         try {
 
-            if (hh.executeUpdate("UPDATE Customer SET fund = fund +" + amount + " WHERE cstmr_id=" + id_) == 1)
+            if (hh.executeUpdate("UPDATE Customer SET fund = fund+" + amount + " WHERE cstmr_id=" + id_) == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("err depositCstmr"); return false;}
@@ -162,7 +166,7 @@ public class Database {
             if (rs.next()) {
                 int current_fund = Integer.parseInt(rs.getString("fund"));
                 if (current_fund >= amount) {
-                    if (hh.executeUpdate("UPDATE Customer SET fund = fund -" + amount + " WHERE cstmr_id=" + id_) == 1)
+                    if (hh.executeUpdate("UPDATE Customer SET fund = fund-" + amount + " WHERE cstmr_id=" + id_) == 1)
                         return 0; // Successful
                     return -2;
                 } else {
@@ -180,7 +184,7 @@ public class Database {
 //                return sym;
 //        }
 //        return null;
-        ResultSet rs = hh.executeQuery("SELECT * FROM Customer WHERE symb_name=" + name_);
+        ResultSet rs = hh.executeQuery("SELECT * FROM Customer WHERE symb_name='" + name_ + "'");
         try {
             if (rs.next())
                 return rs;
@@ -197,7 +201,7 @@ public class Database {
 //        Symbol newSymbl = new Symbol(name_);
 //        symbs.add(newSymbl);
         try {
-            if (hh.executeUpdate("INSERT INTO Symbol values ("  + name_ + ")") == 1)
+            if (hh.executeUpdate("INSERT INTO Symbol values ('"  + name_ + "')") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("add symbol err"); return false;}
@@ -206,7 +210,7 @@ public class Database {
 
     public void add_property(int id,String name,int quantity){
         try {
-            hh.executeUpdate("INSERT INTO Properties (cstmr_id,symb_name,amount) values " + id + "," + name + "," + quantity + ")");
+            hh.executeUpdate("INSERT INTO Properties (cstmr_id,symb_name,amount) values (" + id + ",'" + name + "'," + quantity + ")");
         } catch (Exception ex) {System.err.println("add property err");}
     }
 
@@ -215,7 +219,7 @@ public class Database {
     }
 
     public int get_propertyAmount(int id,String name){
-        ResultSet rs = hh.executeQuery("SELECT * FROM Properties WHERE cstmr_id=" + id + " and symb_name=" + name);
+        ResultSet rs = hh.executeQuery("SELECT * FROM Properties WHERE cstmr_id=" + id + " and symb_name='" + name + "'");
         try {
             if(rs.next())
                 return Integer.parseInt(rs.getString("amount"));

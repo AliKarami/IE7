@@ -23,10 +23,10 @@ CREATE TABLE IF NOT EXISTS DepReqs (
 
 
 CREATE TABLE IF NOT EXISTS Properties (
-  symb_name VARCHAR(10) NOT NULL,
-  amount INT NOT NULL,
+   prop_id INT NOT NULL PRIMARY KEY IDENTITY,
+    symb_name VARCHAR(10) NOT NULL,
+    amount INT NOT NULL,
   cstmr_id INT NOT NULL,
-  PRIMARY KEY(cstmr_id,symb_name),
   CONSTRAINT fk_Properties_1
     FOREIGN KEY (cstmr_id)
     REFERENCES Customer (cstmr_id)

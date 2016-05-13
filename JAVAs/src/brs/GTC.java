@@ -128,8 +128,8 @@ public class GTC implements Type {
         if(!rs1.next() || !rs2.next()){
             return "nothing Dealed!";
         }
-        ResultSet rs3 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id =" + rs1.getString("req_id"));
-        ResultSet rs4 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id =" + rs2.getString("req_id"));
+        ResultSet rs3 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id=" + rs1.getString("req_id"));
+        ResultSet rs4 = Database.getDB().hh.executeQuery("SELECT price,quantity FROM Requests WHERE req_id=" + rs2.getString("req_id"));
         /*Request firstBuyReq = req_.symbl.getBuyer().iterator().next();
         Request firstSellReq = req_.symbl.getSeller().iterator().next();*/
         int buy_price = Integer.parseInt(rs3.getString("price"));
@@ -137,7 +137,7 @@ public class GTC implements Type {
         int buy_quantity = Integer.parseInt(rs3.getString("quantity"));
         int sell_quantity = Integer.parseInt(rs4.getString("quantity"));
         int buyer_id = Integer.parseInt(rs1.getString("buyer_id"));
-        int seller_id = Integer.parseInt(rs1.getString("seller_id"));
+        int seller_id = Integer.parseInt(rs2.getString("seller_id"));
         if ( buy_price >= sell_price )
         {
             //if (firstBuyReq.quantity > firstSellReq.quantity) {
@@ -151,12 +151,18 @@ public class GTC implements Type {
                 //firstSellReq.cstmr.fund += moneyExchanged;
                 Database.getDB().deposit_customer(seller_id,moneyExchanged);
                 //firstBuyReq.quantity -= firstSellReq.quantity;
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
-                //Database.getDB().hh.executeUpdate("UPDATE Properties SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
+                //Exchange properties
+                Database.getDB().hh.executeUpdate("MERGE INTO Properties AS t USING (VALUES('" + symbol + "'," + sell_quantity + "," + buyer_id + ")) AS vals(symb_name,amount,cstmr_id) \n" +
+                        "        ON t.cstmr_id=vals.cstmr_id AND t.symb_name=vals.symb_name\n" +
+                        "    WHEN MATCHED THEN UPDATE SET t.amount = t.amount+vals.amount\n" +
+                        "    WHEN NOT MATCHED THEN INSERT VALUES vals.symb_name, vals.amount, vals.cstmr_id");
+                Database.getDB().hh.executeUpdate("UPDATE Properties SET amount=amount-" + sell_quantity + " WHERE cstmr_id=" + seller_id );
+
                 //req_.symbl.getSeller().remove(firstSellReq);
 
                 // firstSellReq.cstmr.done.add(firstSellReq);
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs2.getString("req_id"));
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET state=1 WHERE req_id=" + rs2.getString("req_id"));
                 //firstSellReq.cstmr.inAct.remove(firstSellReq);
                 Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
                 return seller_id + " sold " + sell_quantity + " shares of " + symbol + " @" + buy_price + " to " + buyer_id;
@@ -174,9 +180,18 @@ public class GTC implements Type {
                 // req_.symbl.getSeller().remove(firstSellReq);
 
                 //firstBuyReq.cstmr.done.add(firstBuyReq);
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs1.getString("req_id"));
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET state=1 WHERE req_id=" + rs1.getString("req_id"));
                 //firstSellReq.cstmr.done.add(firstSellReq);
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs2.getString("req_id"));
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET state=1 WHERE req_id=" + rs2.getString("req_id"));
+
+                //Exchange properties
+                Database.getDB().hh.executeUpdate("MERGE INTO Properties AS t USING (VALUES('" + symbol + "'," + buy_quantity + "," + buyer_id + ")) AS vals(symb_name,amount,cstmr_id) \n" +
+                        "        ON t.cstmr_id=vals.cstmr_id AND t.symb_name=vals.symb_name\n" +
+                        "    WHEN MATCHED THEN UPDATE SET t.amount = t.amount+vals.amount\n" +
+                        "    WHEN NOT MATCHED THEN INSERT VALUES vals.symb_name, vals.amount, vals.cstmr_id");
+                Database.getDB().hh.executeUpdate("UPDATE Properties SET amount=amount-" + sell_quantity + " WHERE cstmr_id=" + seller_id );
+
+
 //                firstBuyReq.cstmr.inAct.remove(firstBuyReq);
 //                firstSellReq.cstmr.inAct.remove(firstSellReq);
                 Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
@@ -190,12 +205,19 @@ public class GTC implements Type {
                 // firstSellReq.cstmr.fund += moneyExchanged;
                 Database.getDB().deposit_customer(seller_id,moneyExchanged);
                 //firstSellReq.quantity -= firstBuyReq.quantity;
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET quantity=quantity-" + buy_quantity + " WHERE req_id=" + rs2.getString("req_id") );
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET quantity=quantity-" + buy_quantity + " WHERE req_id=" + rs2.getString("req_id") );
                 //req_.symbl.getBuyer().remove(firstBuyReq);
 
                 //firstBuyReq.cstmr.done.add(firstBuyReq);
-                Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET state=1 WHERE req_id=" + rs1.getString("req_id"));
+                Database.getDB().hh.executeUpdate("UPDATE Requests SET state=1 WHERE req_id=" + rs1.getString("req_id"));
                 // firstBuyReq.cstmr.inAct.remove(firstBuyReq);
+
+                //Exchange properties
+                Database.getDB().hh.executeUpdate("MERGE INTO Properties AS t USING (VALUES('" + symbol + "'," + buy_quantity + "," + buyer_id + ")) AS vals(symb_name,amount,cstmr_id) \n" +
+                        "        ON t.cstmr_id=vals.cstmr_id AND t.symb_name=vals.symb_name\n" +
+                        "    WHEN MATCHED THEN UPDATE SET t.amount = t.amount+vals.amount\n" +
+                        "    WHEN NOT MATCHED THEN INSERT VALUES vals.symb_name, vals.amount, vals.cstmr_id");
+                Database.getDB().hh.executeUpdate("UPDATE Properties SET amount=amount-" + buy_quantity + " WHERE cstmr_id=" + seller_id );
 
                 Database.getDB().add2log(buyer_id + "," + seller_id + "," + symbol + ",GTC," + sell_quantity + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged) + "," + (Integer.parseInt(rs1.getString("fund")) - moneyExchanged));
                 return seller_id + " sold " + sell_quantity + " shares of " + symbol + " @" + buy_price + " to " + buyer_id;

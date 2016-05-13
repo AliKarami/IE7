@@ -18,6 +18,7 @@ public class Status extends HttpServlet {
         String instrument = request.getParameter("instrument");
 //        PriorityQueue<Request> qu = new PriorityQueue<Request>();
         ResultSet qu = null;
+        ResultSet user = null;
 
         try {
             if (action==null || instrument==null || action.equals("") || instrument.equals(""))
@@ -26,12 +27,16 @@ public class Status extends HttpServlet {
                 ResultSet tmp = Database.getDB().get_symbol(instrument);
                 if (tmp.next()) {
                     qu = Database.getDB().getBuyer(tmp.getString("symb_name"));
+                    if(qu.next())
+                        user = Database.getDB().get_user(Integer.parseInt(qu.getString("cstmr_id")));
                 } else
                     qu = null;
             } else {
                 ResultSet tmp = Database.getDB().get_symbol(instrument);
                 if (tmp.next()) {
                     qu = Database.getDB().getSeller(tmp.getString("symb_name"));
+                    if(qu.next())
+                        user = Database.getDB().get_user(Integer.parseInt(qu.getString("cstmr_id")));
                 } else
                     qu = null;
             }
@@ -41,9 +46,11 @@ public class Status extends HttpServlet {
 
         request.setAttribute("SB",action);
         request.setAttribute("Queue",qu);
+        request.setAttribute("User",user);
         request.setAttribute("instrument",instrument);
         request.getRequestDispatcher("Queue.jsp").forward(request,response);
 
     }
+
 
 }

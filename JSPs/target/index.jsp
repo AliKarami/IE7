@@ -1,5 +1,4 @@
 <%@include file="header.jsp"%>
-  
   	<% String msg=(String)request.getAttribute("Message"); %>
   	<% msg=(msg==null)?"":msg; %>
   	
