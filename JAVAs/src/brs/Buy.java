@@ -35,9 +35,9 @@ public class Buy extends HttpServlet {
                 if (type.equals("GTC")) {
                     msg = Database.getDB().gtc.Buy(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 } else if (type.equals("MPO")) {
-                    msg = Database.getDB().mpo.Buy(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
+                    //msg = Database.getDB().mpo.Buy(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 } else if (type.equals("IOC")) {
-                    msg = Database.getDB().ioc.Buy(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
+                    //msg = Database.getDB().ioc.Buy(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 }
 
             } catch (Exception ex ){

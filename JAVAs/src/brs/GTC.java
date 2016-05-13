@@ -152,6 +152,7 @@ public class GTC implements Type {
                 Database.getDB().deposit_customer(seller_id,moneyExchanged);
                 //firstBuyReq.quantity -= firstSellReq.quantity;
                 Database.getDB().hh.executeUpdate("UPDATE REQUESTS SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
+                //Database.getDB().hh.executeUpdate("UPDATE Properties SET quantity=quantity-" + sell_quantity + " WHERE req_id=" + rs1.getString("req_id") );
                 //req_.symbl.getSeller().remove(firstSellReq);
 
                 // firstSellReq.cstmr.done.add(firstSellReq);

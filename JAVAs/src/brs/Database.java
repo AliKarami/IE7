@@ -7,8 +7,8 @@ import java.util.*;
 
 public class Database {
     static GTC gtc = new GTC();
-    static MPO mpo = new MPO();
-    static IOC ioc = new IOC();
+    //static MPO mpo = new MPO();
+    //static IOC ioc = new IOC();
     HSQLHandler hh = new HSQLHandler();
 
     private static Database theDatabase = new Database();
