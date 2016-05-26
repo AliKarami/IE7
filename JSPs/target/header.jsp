@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+<%@ page contentType="text/html; charset=UTF-8" %>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <title> بازار بورس </title>
 </head>
