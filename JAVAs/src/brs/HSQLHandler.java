@@ -9,7 +9,7 @@ public class HSQLHandler {
     public static void init_tables() {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+            Class.forName("org.hsqldb.jdbcDriver");
         } catch (ClassNotFoundException ex) {
             System.err.println("Unable to load HSQLDB JDBC driver");
         }
@@ -17,7 +17,7 @@ public class HSQLHandler {
 
         try {
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
             Statement stmt = con.createStatement();
             BufferedReader in = new BufferedReader(new FileReader("init.sql"));
             String str;
@@ -43,9 +43,9 @@ public class HSQLHandler {
     public ResultSet executeQuery(String sql) {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+            Class.forName("org.hsqldb.JDBCDriver");
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
             Statement stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sql);
@@ -67,9 +67,9 @@ public class HSQLHandler {
     public int executeUpdate(String sql) {
         // load the JDBC Driver
         try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+            Class.forName("org.hsqldb.JDBCDriver");
             // connecting to the database
-            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost");
+            Connection con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/");
             Statement stmt = con.createStatement();
             if (con != null && !con.isClosed()) {
                 try {
