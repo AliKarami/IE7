@@ -1,6 +1,7 @@
 <%@page import="java.util.*"%>
 <%@page import="java.sql.*"%>
 <%@page import="brs.*"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 
 <%@include file="header.jsp"%>
 
