@@ -27,8 +27,10 @@
   <a href="DepositWithdraw.jsp"> مدیریت اعتبار </a> <hr>
   <a href="Status.jsp"> وضعیت بازار </a> <hr>
   <a href="Profile.jsp"> مشاهده پروفایل</a> <hr>
+   <a href="OtherProfile.jsp">   مشاهده پروفایل دیگر کاربران</a> <hr>
   <a href="SymbolAdding.jsp">اضافه کردن نماد جدید</a> <hr>
   <a href="ApproveSymbols.jsp">تایید درخواست اضافه کردن نماد جدید</a> <hr>
+  <a href="Backup">تهیه پشتیبان</a> <hr>
   <a href="Logout.jsp"> خروج </a> <hr>
 
 

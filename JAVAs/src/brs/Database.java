@@ -218,4 +218,22 @@ public class Database {
             return Database.getDB().hh.executeQuery("Select * FROM Buyers WHERE symb_name='" + name_ + "' AND state=0 ORDER BY fund DESC");
         } catch (Exception ex) {System.out.println("err on getBuyer " + name_); return null;}
     }
+
+    public Vector<String> get_profile(int id){
+        Vector<String> profile = new  Vector<String>();
+        try {
+            ResultSet rs = Database.getDB().get_user(id);
+            if (rs.next()) {
+                profile.add(rs.getString("name"));
+                profile.add(rs.getString("family"));
+                profile.add(rs.getString("fund"));
+                profile.add(rs.getString("role"));
+            }
+
+        }catch(Exception ex){
+            System.err.println("get user error in login");
+        }finally {
+            return profile;
+        }
+    }
 }

@@ -19,10 +19,7 @@ public class otherProfiles extends HttpServlet {
         try {
             ResultSet rs = Database.getDB().get_user(id);
             if (rs.next()) {
-                request.setAttribute("name",rs.getString("name"));
-                request.setAttribute("family",rs.getString("family"));
-                request.setAttribute("fund",rs.getString("fund"));
-                request.setAttribute("role",rs.getString("role"));
+                request.setAttribute("id",request.getParameter("id"));
                 request.getRequestDispatcher("Profile.jsp").forward(request,response);
                 return;
             }else{
@@ -35,7 +32,7 @@ public class otherProfiles extends HttpServlet {
         }
 
         request.setAttribute("Message",msg);
-        request.getRequestDispatcher("index.jsp").forward(request,response);
+        request.getRequestDispatcher("OtherProfile.jsp").forward(request,response);
 
     }
 
