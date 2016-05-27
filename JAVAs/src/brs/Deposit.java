@@ -14,16 +14,15 @@ public class Deposit extends HttpServlet {
 
         String msg = "";
 
-        String id = request.getParameter("id");
         String amount = request.getParameter("amount");
 
-        if (id==null || amount==null) {
+        if (amount==null) {
             msg = "Mismatched Parameters.";
         }
-        else if(id=="" || amount==""){
+        else if(amount==""){
             msg = "Some Parameter are Empty.";
         }
-        else if (Database.getDB().add2DepReqs(Integer.parseInt(id),Integer.parseInt(amount))) {
+        else if (Database.getDB().add2DepReqs(Database.getDB().LoggedInID,Integer.parseInt(amount))) {
             msg = "Deposit Request Successfuly Added for Admin Approvement.";
         }
         else {

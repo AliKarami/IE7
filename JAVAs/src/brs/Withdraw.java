@@ -14,16 +14,15 @@ public class Withdraw extends HttpServlet {
 
         String msg = "";
 
-        String id = request.getParameter("id");
         String amount = request.getParameter("amount");
 
-        if (id==null || amount==null) {
+        if (amount==null) {
             msg = "Mismatched Parameters.";
         }
-        else if(id=="" || amount==""){
+        else if(amount==""){
             msg = "Some Parameter are Empty.";
         }
-        else switch (Database.getDB().withdraw_customer(Integer.parseInt(id),Integer.parseInt(amount))) {
+        else switch (Database.getDB().withdraw_customer(Database.getDB().LoggedInID,Integer.parseInt(amount))) {
                 case 0:
                     msg = "Withdraw Successfuly done.";
                     break;
