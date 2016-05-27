@@ -19,7 +19,7 @@ public class approveSymbol extends HttpServlet {
         if (action==null || symbol_name==null || action.equals("") || symbol_name.equals(""))
             msg = "fucked up error";
         else if (action.equals("Approve")) {
-            Database.getDB().add_symbol(symbol_name);
+            Database.getDB().app_symbol(symbol_name);
             msg = "Add Symbol Approved";
         } else {
             Database.getDB().del_symbol(symbol_name);
