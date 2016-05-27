@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("Approve")
+@WebServlet("/ApproveSymbols")
 public class approveSymbol extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -27,7 +27,7 @@ public class approveSymbol extends HttpServlet {
         }
 
         request.setAttribute("Message",msg);
-        request.getRequestDispatcher("Approve.jsp").forward(request,response);
+        request.getRequestDispatcher("ApproveSymbols.jsp").forward(request,response);
 
     }
 

@@ -10,26 +10,21 @@
 
     <%
     Database db = Database.getDB();
-    Vector<Integer[]> DepReqs = db.getDepReqs();
+    Vector<String> symbs = db.getSymbs("FALSE");
     %>
 
       <h3> Requests </h3> <br/>
       <table>
       <%
-      for (int i =0 ; i<DepReqs.size(); i++) {
+      for (int i =0 ; i<symbs.size(); i++) {
       %>
       <form action="requests" method="GET">
       <tr>
         <td>
-        user  <%= DepReqs.get(i)[0] %>
+        user  <%= symbs.get(i) %>
         </td>
         <td>
-        amount <%= DepReqs.get(i)[1] %>
-        </td>
-        <td>
-          <input type="hidden" name="myI" value="<%= i %>">
-          <input type="hidden" name="cstmrid_" value="<%= DepReqs.get(i)[0] %>">
-          <input type="hidden" name="amount_" value="<%= DepReqs.get(i)[1] %>">
+          <input type="hidden" name="name" value="<%= symbs.get(i) %>">
           <input type="submit" name="action" value="Approve">
           <input type="submit" name="action" value="Decline">
         </td>

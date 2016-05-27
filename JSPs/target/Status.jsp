@@ -6,7 +6,7 @@
 
     <%
     Database db = Database.getDB();
-    Vector<String> symbs = db.getSymbs();
+    Vector<String> symbs = db.getSymbs("TRUE");
     %>
 
     	<h3> List of Symbols </h3> <br/>

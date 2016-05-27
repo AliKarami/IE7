@@ -149,8 +149,9 @@ public class Database {
         return rs;
     }
 
-    public Vector<String> getSymbs () {
-        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE status=TRUE");
+
+    public Vector<String> getSymbs (String status) {
+        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE status= " + status);
         Vector<String> SymbNames = new Vector<String>();
         try {
             while (rs.next()) {
