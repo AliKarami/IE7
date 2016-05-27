@@ -22,7 +22,7 @@
     		<form action="Status" method="GET">
           <input type="submit" name="action" value="Sellers">
           <input type="submit" name="action" value="Buyers">
-          <input type="hidden" name="instrument" value="<%= symbs.get(i).name %>">
+          <input type="hidden" name="instrument" value="<%= symbs.get(i) %>">
     		</td>
     	</tr>
     	<%
