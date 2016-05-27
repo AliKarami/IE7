@@ -19,30 +19,18 @@ public class Database {
 
     Database() {
         hh.init_tables();
-        //Customer Admin = new Customer(1,"admin","");
-        //list.add(Admin);
         hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0,'AD')");
     }
-
-//    public Customer get_user(int id_){
-//        for (Customer cstmr : list) {
-//            if (cstmr.id == id_)
-//                return cstmr;
-//        }
-//        return null;
-//    }
 
     public ResultSet get_user(int id_) {
         return hh.executeQuery("SELECT * FROM Customer WHERE cstmr_id=" + id_);
     }
 
     public void add2log (String Content) {
-//        log.add(Content);
         hh.executeUpdate("INSERT INTO Log (desc) values ('" + Content  + "')");
     }
 
     public Vector<String> getLog() {
-//        return log;
         ResultSet rs = hh.executeQuery("SELECT * FROM Log");
         Vector<String> res = new Vector<String>();
         try {
@@ -56,7 +44,6 @@ public class Database {
     }
 
     public Vector<Integer[]> getDepReqs() {
-//        return DepReqs;
         ResultSet rs = hh.executeQuery("SELECT * FROM DepReqs");
         Vector<Integer[]> res = new Vector<Integer[]>();
         try {
@@ -76,11 +63,6 @@ public class Database {
     public boolean add2DepReqs (int id, int amount) {
         try {
             if (get_user(id).next()) {
-//                Integer[] temp = new Integer[2];
-//                temp[0]=id;
-//                temp[1]=amount;
-//                DepReqs.add(temp);
-//                return true;
                 if (hh.executeUpdate("INSERT INTO DepReqs (cstmr_id,amount) values (" + id + "," + amount + ")") == 1) {
                     return true;
                 } else
@@ -94,8 +76,6 @@ public class Database {
     }
 
     public void appDR(int cstmrid_,int amount_) {
-//        int id_ = DepReqs.get(i)[0];
-//        int amount_ = DepReqs.get(i)[1];
         ResultSet rs = hh.executeQuery("SELECT * FROM DepReqs WHERE cstmr_id=" + cstmrid_ + " AND amount=" + amount_);
         try {
             if (rs.next()) {
@@ -104,24 +84,14 @@ public class Database {
             }
             else System.err.println("DepReq is fake!");
         } catch (Exception ex) {System.err.println("appDepReq err");}
-//        deposit_customer(id_,amount_);
-//        DepReqs.remove(i);
     }
 
     public void decDR(int cstmrid_,int amount_) {
-//        DepReqs.remove(i);
         if (hh.executeUpdate("DELETE FROM DEPREQS WHERE CSTMR_ID=" +cstmrid_+ " AND AMOUNT=" +amount_+ " AND rownum() <= 1") != 1)
             System.err.println("decDepReq err");
     }
 
     public boolean add_customer(int id_,String name_,String family_) {
-//        for (Customer cstmr : list) {
-//            if (cstmr.id==id_)
-//                return false;
-//        }
-//        Customer newcstmr = new Customer(id_,name_,family_);
-//        list.add(newcstmr);
-//        return true;
         try {
             if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0,'NO')") == 1)
                 return true;
@@ -131,13 +101,6 @@ public class Database {
     }
 
     public boolean deposit_customer(int id_,int amount){
-//        for (Customer cstmr : list) {
-//            if (cstmr.id==id_) {
-//                cstmr.fund += amount;
-//                return true;
-//            }
-//        }
-//        return false;
         try {
 
             if (hh.executeUpdate("UPDATE Customer SET fund = fund+" + amount + " WHERE cstmr_id=" + id_) == 1)
@@ -146,17 +109,6 @@ public class Database {
         } catch (Exception ex) {System.err.println("err depositCstmr"); return false;}
     }
     public int withdraw_customer(int id_,int amount) {
-//        for (Customer cstmr : list) {
-//            if (cstmr.id==id_) {
-//                if (cstmr.fund >= amount) {
-//                    cstmr.fund -= amount;
-//                    return 0; // Successful
-//                } else {
-//                    return -1; //Not enough money
-//                }
-//            }
-//        }
-//        return -2; //Unknown user id
         ResultSet rs = get_user(id_);
         try {
             if (rs.next()) {
@@ -175,11 +127,6 @@ public class Database {
     }
 
     public ResultSet get_symbol(String name_) {
-//        for (Symbol sym : symbs) {
-//            if (sym.name.equals(name_))
-//                return sym;
-//        }
-//        return null;
         ResultSet rs = hh.executeQuery("SELECT * FROM Customer WHERE symb_name='" + name_ + "'");
         try {
             if (rs.next())
@@ -194,8 +141,6 @@ public class Database {
     }
 
     public boolean add_symbol(String name_) {
-//        Symbol newSymbl = new Symbol(name_);
-//        symbs.add(newSymbl);
         try {
             if (hh.executeUpdate("INSERT INTO Symbol values ('"  + name_ + "')") == 1)
                 return true;
