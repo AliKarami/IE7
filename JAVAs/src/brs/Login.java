@@ -45,7 +45,7 @@ public class Login extends HttpServlet {
         }
 
         request.setAttribute("Message",msg);
-        request.getRequestDispatcher("SignUp.jsp").forward(request,response);
+        request.getRequestDispatcher("index.jsp").forward(request,response);
 
     }
 
