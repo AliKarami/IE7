@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="hsqldb">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/JAVAs/bin/brs/hsqldb.jar!/" />
+      <root url="jar:///opt/tomcat/apache-tomcat-8.0.33/lib/hsqldb.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

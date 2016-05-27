@@ -13,15 +13,17 @@ public class Admin extends HttpServlet {
             throws ServletException, IOException {
 
         String action =request.getParameter("action");
-        String ReqNum = request.getParameter("ReqNum");
+        String cstmrid_ = request.getParameter("cstmrid_");
+        String amount_ = request.getParameter("amount_");
         String msg = "";
-        if (action==null || ReqNum==null || action.equals("") || ReqNum.equals(""))
+
+        if (action==null || cstmrid_==null || amount_==null || action.equals("") || cstmrid_.equals("") || amount_.equals(""))
             msg = "";
         else if (action.equals("Approve")) {
-            Database.getDB().appDR(Integer.parseInt(ReqNum));
+            Database.getDB().appDR(Integer.parseInt(cstmrid_),Integer.parseInt(amount_));
             msg = "Deposition Approved";
         } else {
-            Database.getDB().decDR(Integer.parseInt(ReqNum));
+            Database.getDB().decDR(Integer.parseInt(cstmrid_),Integer.parseInt(amount_));
             msg = "Deposition Decliend";
         }
 

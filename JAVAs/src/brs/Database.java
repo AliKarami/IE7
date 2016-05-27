@@ -93,25 +93,24 @@ public class Database {
         }
     }
 
-    public void appDR(int i) {
+    public void appDR(int cstmrid_,int amount_) {
 //        int id_ = DepReqs.get(i)[0];
 //        int amount_ = DepReqs.get(i)[1];
-        ResultSet rs = hh.executeQuery("SELECT * FROM DepReqs WHERE DepReq_id=" + i);
+        ResultSet rs = hh.executeQuery("SELECT * FROM DepReqs WHERE cstmr_id=" + cstmrid_ + " AND amount=" + amount_);
         try {
             if (rs.next()) {
-                int cstmr_id = Integer.parseInt(rs.getString("cstmr_id"));
-                int amount = Integer.parseInt(rs.getString("amount"));
-                deposit_customer(cstmr_id,amount);
-                hh.executeUpdate("DELETE FROM DepReqs WHERE DepReq_id=" + i);
+                deposit_customer(cstmrid_,amount_);
+                hh.executeUpdate("DELETE FROM DEPREQS WHERE CSTMR_ID=" +cstmrid_+ " AND AMOUNT=" +amount_+ " AND rownum() <= 1");
             }
+            else System.err.println("DepReq is fake!");
         } catch (Exception ex) {System.err.println("appDepReq err");}
 //        deposit_customer(id_,amount_);
 //        DepReqs.remove(i);
     }
 
-    public void decDR(int i) {
+    public void decDR(int cstmrid_,int amount_) {
 //        DepReqs.remove(i);
-        if (hh.executeUpdate("DELETE FROM DepReqs WHERE DepReq_id=" + i) != 1)
+        if (hh.executeUpdate("DELETE FROM DEPREQS WHERE CSTMR_ID=" +cstmrid_+ " AND AMOUNT=" +amount_+ " AND rownum() <= 1") != 1)
             System.err.println("decDepReq err");
     }
 
