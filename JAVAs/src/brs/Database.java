@@ -21,7 +21,7 @@ public class Database {
         hh.init_tables();
         //Customer Admin = new Customer(1,"admin","");
         //list.add(Admin);
-        hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0)");
+        hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0,'AD')");
     }
 
 //    public Customer get_user(int id_){
@@ -123,7 +123,7 @@ public class Database {
 //        list.add(newcstmr);
 //        return true;
         try {
-            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0)") == 1)
+            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0,'NO')") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("add cstmr err"); return false;}

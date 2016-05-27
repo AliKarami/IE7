@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS Customer (
   cstmr_id INT NOT NULL PRIMARY KEY,
   name VARCHAR(50) NULL,
   family VARCHAR(70) NULL,
-  fund INT NOT NULL);
+  fund INT NOT NULL,
+  role CHAR(2) NOT NULL);
 
 
 CREATE TABLE IF NOT EXISTS Symbol (
