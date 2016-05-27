@@ -19,11 +19,11 @@ public class approveSymbol extends HttpServlet {
         if (action==null || symbol_name==null || action.equals("") || symbol_name.equals(""))
             msg = "fucked up error";
         else if (action.equals("Approve")) {
-            Database.getDB().add_symbol();
-            msg = "Deposition Approved";
+            Database.getDB().add_symbol(symbol_name);
+            msg = "Add Symbol Approved";
         } else {
-            Database.getDB().decDR(Integer.parseInt(cstmrid_),Integer.parseInt(amount_));
-            msg = "Deposition Decliend";
+            Database.getDB().del_symbol(symbol_name);
+            msg = "Add Symbol Decliend";
         }
 
         request.setAttribute("Message",msg);

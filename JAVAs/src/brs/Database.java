@@ -162,10 +162,28 @@ public class Database {
 
     public boolean add_symbol(String name_) {
         try {
-            if (hh.executeUpdate("INSERT INTO Symbol values ('"  + name_ + "')") == 1)
+            if (hh.executeUpdate("INSERT INTO Symbol values ('"  + name_ + "',FALSE)") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("add symbol err"); return false;}
+
+    }
+
+    public boolean app_symbol(String name_) {
+        try {
+            if (hh.executeUpdate("UPDATE Symbol SET status = TRUE WHERE symb_name=" + name_) == 1)
+                return true;
+            return false;
+        } catch (Exception ex) {System.err.println("app symbol err"); return false;}
+
+    }
+
+    public boolean del_symbol(String name_) {
+        try {
+            if (hh.executeUpdate("DELETE FROM Symbol WHERE symb_name=" + name_ + "AND status = FALSE") == 1)
+                return true;
+            return false;
+        } catch (Exception ex) {System.err.println("delete symbol err"); return false;}
 
     }
 

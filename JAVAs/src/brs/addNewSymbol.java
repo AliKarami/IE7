@@ -20,7 +20,7 @@ public class addNewSymbol extends HttpServlet {
         else if(symbol_name=="" ){
             msg = "Some Parameter are Empty.";
         }
-        else if (Database.getDB().add_symbol(symbol_name)) {
+        else if (Database.getDB().app_symbol(symbol_name)) {
             msg = "Successfully Added.";
         }
         else {
