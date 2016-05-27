@@ -11,10 +11,12 @@ public class GTC implements Type {
         ResultSet seller = db_.get_user(id_);
         ResultSet stock = db_.get_symbol(name_);
         if (id_ == 1) { //handle admins POWER!!!
-            if (stock == null) {
-                db_.add_symbol(name_);
-                stock = db_.get_symbol(name_);
-            }
+            try {
+                if (!stock.next()) {
+                    db_.add_symbol(name_);
+                    stock = db_.get_symbol(name_);
+                }
+            } catch (SQLException ex) {System.err.println("adding admin symbol error!");}
             // seller.property.put(name_,quantity_);
             db_.add_property(id_,name_,quantity_);
         }

@@ -13,31 +13,25 @@ public class Sell extends HttpServlet {
 
         String msg = "";
 
-        String id = request.getParameter("id");
         String instrument = request.getParameter("instrument");
         String price = request.getParameter("price");
         String quantity = request.getParameter("quantity");
         String type = request.getParameter("type");
 
-        if (id==null || instrument==null || price==null || quantity==null || type==null) {
+        if (instrument==null || price==null || quantity==null || type==null) {
             msg = "Mismatched Parameters.";
         }
-        else if(id=="" || instrument=="" || price=="" || quantity=="" || type==""){
+        else if(instrument=="" || price=="" || quantity=="" || type==""){
             msg = "Some Parameter are Empty.";
         }
         else {
             try{
-//                Class <? extends Type> TypeClass = Class.forName(type).asSubclass(Type.class);
-//                Object obj = TypeClass.newInstance();
-//                Method mtd = TypeClass.getDeclaredMethod("Sell", new Class[]{Integer.TYPE, String.class, Integer.TYPE, Integer.TYPE, Database.class});
-//                msg = (String)mtd.invoke(obj,Integer.parseInt(id), instrument, Integer.parseInt(price), Integer.parseInt(quantity), Database.getDB());
-
                 if (type.equals("GTC")) {
-                    msg = Database.getDB().gtc.Sell(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
+                    msg = Database.getDB().gtc.Sell(Database.getDB().LoggedInID,instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 } else if (type.equals("MPO")) {
-                    //msg = Database.getDB().mpo.Sell(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
+                    //msg = Database.getDB().mpo.Sell(Database.getDB().LoggedInID,instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 } else if (type.equals("IOC")) {
-                    //msg = Database.getDB().ioc.Sell(Integer.parseInt(id),instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
+                    //msg = Database.getDB().ioc.Sell(Database.getDB().LoggedInID,instrument,Integer.parseInt(price),Integer.parseInt(quantity),Database.getDB());
                 }
 
             } catch (Exception ex ){

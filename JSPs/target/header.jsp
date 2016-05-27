@@ -26,6 +26,7 @@
   <a href="BuySell.jsp"> خرید و فروش </a> <hr>
   <a href="DepositWithdraw.jsp"> مدیریت اعتبار </a> <hr>
   <a href="Status.jsp"> وضعیت بازار </a> <hr>
+  <a href="Logout.jsp"> خروج </a> <hr>
 
 
  </div>

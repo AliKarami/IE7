@@ -30,11 +30,12 @@ public class Database {
         try {
             LoggedInID = id;
             ResultSet rs = get_user(id);
-            LoggedInRole = rs.getString("Role");
+            if (rs.next())
+                LoggedInRole = rs.getString("Role");
         } catch (SQLException ex) {System.err.println("setting logged user error");}
     }
 
-    public void logOutUser(int id) {
+    public void logOutUser() {
         LoggedInID = -1;
         LoggedInRole = "NU";
     }
@@ -144,17 +145,12 @@ public class Database {
     }
 
     public ResultSet get_symbol(String name_) {
-        ResultSet rs = hh.executeQuery("SELECT * FROM Customer WHERE symb_name='" + name_ + "'");
-        try {
-            if (rs.next())
-                return rs;
-            else
-                return null;
-        } catch (Exception ex) {System.err.println("err on getsymb"); return null;}
+        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE symb_name='" + name_ + "' AND status=TRUE");
+        return rs;
     }
 
     public Vector<String> getSymbs () {
-        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol");
+        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE status=TRUE");
         Vector<String> SymbNames = new Vector<String>();
         try {
             while (rs.next()) {
