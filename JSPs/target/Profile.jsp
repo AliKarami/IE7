@@ -6,7 +6,6 @@
 <%@include file="header.jsp"%>
 
 
-<% Database db = Database.getDB();%>
     <% String id = (String)request.getAttribute("id"); %>
       	<% id=(id==null)?Integer.toString(db.LoggedInID):id; %>
 

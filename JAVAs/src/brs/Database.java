@@ -151,7 +151,7 @@ public class Database {
 
 
     public Vector<String> getSymbs (String status) {
-        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE status= " + status);
+        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol WHERE status=" + status);
         Vector<String> SymbNames = new Vector<String>();
         try {
             while (rs.next()) {
@@ -172,7 +172,7 @@ public class Database {
 
     public boolean app_symbol(String name_) {
         try {
-            if (hh.executeUpdate("UPDATE Symbol SET status = TRUE WHERE symb_name=" + name_) == 1)
+            if (hh.executeUpdate("UPDATE Symbol SET status=TRUE WHERE symb_name='" + name_+"'") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("app symbol err"); return false;}
@@ -181,7 +181,7 @@ public class Database {
 
     public boolean del_symbol(String name_) {
         try {
-            if (hh.executeUpdate("DELETE FROM Symbol WHERE symb_name=" + name_ + "AND status = FALSE") == 1)
+            if (hh.executeUpdate("DELETE FROM Symbol WHERE symb_name='" + name_ + "'AND status = FALSE") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("delete symbol err"); return false;}

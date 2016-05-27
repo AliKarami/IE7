@@ -9,7 +9,6 @@
     <div id="msg"> <%= msg %> </div>
 
     <%
-    Database db = Database.getDB();
     Vector<String> symbs = db.getSymbs("FALSE");
     %>
 
@@ -18,10 +17,10 @@
       <%
       for (int i =0 ; i<symbs.size(); i++) {
       %>
-      <form action="requests" method="GET">
+      <form action="ApproveSymbols" method="GET">
       <tr>
         <td>
-        user  <%= symbs.get(i) %>
+        symbol:  <%= symbs.get(i) %>
         </td>
         <td>
           <input type="hidden" name="name" value="<%= symbs.get(i) %>">

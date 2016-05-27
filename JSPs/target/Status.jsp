@@ -5,7 +5,6 @@
 <%@include file="header.jsp"%>
 
     <%
-    Database db = Database.getDB();
     Vector<String> symbs = db.getSymbs("TRUE");
     %>
 

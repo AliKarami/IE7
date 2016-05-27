@@ -1,5 +1,6 @@
 <%@page import="java.util.*"%>
 <%@page import="brs.*"%>
+<% Database db = Database.getDB(); %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <!DOCTYPE html>
@@ -22,24 +23,48 @@
  </div>
 
 
-
- <div id="menu">
+<div id="menu">
 
   <a href="../index.jsp"> خانه </a> <hr>
+  <% if(db.LoggedInID == -1){ %>
   <a href="../SignUp.jsp">  عضویت </a> <hr>
+  <% } %>
+  <% if(db.LoggedInID != -1){ %>
   <a href="../BuySell.jsp"> خرید و فروش </a> <hr>
+  <% } %>
+  <% if(db.LoggedInRole.equals("NO") || db.LoggedInRole.equals("AD")){ %>
   <a href="../DepositWithdraw.jsp"> مدیریت اعتبار </a> <hr>
+  <% } %>
+   <% if(db.LoggedInRole.equals("BK") || db.LoggedInRole.equals("AD")){ %>
+   <a href="requests">تایید درخواست اعتبار</a> <hr>
+   <% } %>
+  <% if(db.LoggedInID != -1){ %>
   <a href="../Status.jsp"> وضعیت بازار </a> <hr>
+  <a href="../Profile.jsp"> مشاهده پروفایل</a> <hr>
+  <% } %>
+  <% if(db.LoggedInRole.equals("AD")){ %>
+  <a href="../OtherProfile.jsp">   مشاهده پروفایل دیگر کاربران</a> <hr>
+  <a href="../Backup">تهیه پشتیبان</a> <hr>
+  <a href="../ApproveSymbols.jsp">تایید درخواست اضافه کردن نماد جدید</a> <hr>
+  <% } %>
+  <% if(db.LoggedInRole.equals("BS") || db.LoggedInRole.equals("AD")){ %>
+  <a href="../SymbolAdding.jsp">اضافه کردن نماد جدید</a> <hr>
+  <% } %>
+  <% if(db.LoggedInID != -1){ %>
+  <a href="../Logout.jsp"> خروج </a> <hr>
+  <% } %>
 
 
  </div>
+
+
  <div id="main">
     <% String msg=(String)request.getAttribute("Message"); %>
     <% msg=(msg==null)?"":msg; %>
     <div id="msg"> <%= msg %> </div>
 
     <%
-    Database db = Database.getDB();
+
     Vector<Integer[]> DepReqs = db.getDepReqs();
     %>
 
