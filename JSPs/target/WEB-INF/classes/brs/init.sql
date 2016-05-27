@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS Customer (
   cstmr_id INT NOT NULL PRIMARY KEY,
   name VARCHAR(50) NULL,
   family VARCHAR(70) NULL,
-  fund INT NOT NULL);
+  fund INT NOT NULL,
+  role CHAR(2) NOT NULL);
 
 
 CREATE TABLE IF NOT EXISTS Symbol (
@@ -23,10 +24,10 @@ CREATE TABLE IF NOT EXISTS DepReqs (
 
 
 CREATE TABLE IF NOT EXISTS Properties (
-   prop_id INT NOT NULL PRIMARY KEY IDENTITY,
-    symb_name VARCHAR(10) NOT NULL,
-    amount INT NOT NULL,
+  symb_name VARCHAR(10) NOT NULL,
+  amount INT NOT NULL,
   cstmr_id INT NOT NULL,
+  PRIMARY KEY(cstmr_id,symb_name),
   CONSTRAINT fk_Properties_1
     FOREIGN KEY (cstmr_id)
     REFERENCES Customer (cstmr_id)

@@ -2,6 +2,7 @@ package brs;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -12,6 +13,9 @@ public class Database {
 //    static IOC ioc = new IOC();
     static HSQLHandler hh = new HSQLHandler();
 
+    public int LoggedInID = -1;
+    public String LoggedInRole = "NU";
+
     private static Database theDatabase = new Database();
     public static Database getDB() {
         return theDatabase;
@@ -20,6 +24,19 @@ public class Database {
     Database() {
         hh.init_tables();
         hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0,'AD')");
+    }
+
+    public void logInUser(int id) {
+        try {
+            LoggedInID = id;
+            ResultSet rs = get_user(id);
+            LoggedInRole = rs.getString("Role");
+        } catch (SQLException ex) {System.err.println("setting logged user error");}
+    }
+
+    public void logOutUser(int id) {
+        LoggedInID = -1;
+        LoggedInRole = "NU";
     }
 
     public ResultSet get_user(int id_) {
@@ -136,8 +153,15 @@ public class Database {
         } catch (Exception ex) {System.err.println("err on getsymb"); return null;}
     }
 
-    public ResultSet getSymbs () {//return symbs;
-        return hh.executeQuery("SELECT * FROM Symbol");
+    public Vector<String> getSymbs () {
+        ResultSet rs = hh.executeQuery("SELECT * FROM Symbol");
+        Vector<String> SymbNames = new Vector<String>();
+        try {
+            while (rs.next()) {
+                SymbNames.add(rs.getString("symb_name"));
+            }
+        } catch (SQLException ex) {System.err.println("error on getting symbols");}
+        return SymbNames;
     }
 
     public boolean add_symbol(String name_) {

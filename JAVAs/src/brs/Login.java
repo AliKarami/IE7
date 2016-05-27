@@ -25,19 +25,8 @@ public class Login extends HttpServlet {
         else {
             try {
                 if (Database.getDB().get_user(Integer.parseInt(id)).next()) {
-                    HttpSession session = request.getSession();
-                    int userId = Integer.parseInt(id);
-                    session.setAttribute("id", userId);
-                    //setting session to expiry in 30 mins
-                    session.setMaxInactiveInterval(30 * 60);
-                    Cookie userName = new Cookie("id", id);
-                    userName.setMaxAge(30 * 60);
-                    response.addCookie(userName);
-
-                    msg = "Successfuly Added.";
-                    request.setAttribute("Message", msg);
-                    response.sendRedirect("index.jsp");
-                    return;
+                    Database.getDB().logInUser(Integer.parseInt(id));
+                    msg = "Logged In Successfully";
                 } else {
                     msg = "User ID has been Already Exists";
                 }

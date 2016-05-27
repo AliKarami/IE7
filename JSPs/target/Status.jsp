@@ -6,7 +6,7 @@
 
     <%
     Database db = Database.getDB();
-    Vector<Symbol> symbs = db.getSymbs();
+    Vector<String> symbs = db.getSymbs();
     %>
 
     	<h3> List of Symbols </h3> <br/>
@@ -16,7 +16,7 @@
     	%>
     	<tr>
     		<td>
-    		 <%= symbs.get(i).name %>
+    		 <%= symbs.get(i) %>
     		</td>
     		<td>
     		<form action="Status" method="GET">
