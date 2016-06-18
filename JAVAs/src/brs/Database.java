@@ -14,7 +14,6 @@ public class Database {
     static HSQLHandler hh = new HSQLHandler();
 
     public int LoggedInID = -1;
-    public String LoggedInRole = "NU";
 
     private static Database theDatabase = new Database();
     public static Database getDB() {
@@ -23,21 +22,19 @@ public class Database {
 
     Database() {
         hh.init_tables();
-        hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0,'AD')");
+        hh.executeUpdate("INSERT INTO Customer VALUES (1,'admin','',0)");
     }
 
     public void logInUser(int id) {
         try {
             LoggedInID = id;
             ResultSet rs = get_user(id);
-            if (rs.next())
-                LoggedInRole = rs.getString("Role");
+            if (rs.next());
         } catch (SQLException ex) {System.err.println("setting logged user error");}
     }
 
     public void logOutUser() {
         LoggedInID = -1;
-        LoggedInRole = "NU";
     }
 
     public ResultSet get_user(int id_) {
@@ -111,7 +108,7 @@ public class Database {
 
     public boolean add_customer(int id_,String name_,String family_) {
         try {
-            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0,'NO')") == 1)
+            if (hh.executeUpdate("INSERT INTO Customer values (" + id_ + ",'" + name_ + "','" + family_ + "',0)") == 1)
                 return true;
             return false;
         } catch (Exception ex) {System.err.println("add cstmr err"); return false;}
@@ -170,24 +167,6 @@ public class Database {
 
     }
 
-    public boolean app_symbol(String name_) {
-        try {
-            if (hh.executeUpdate("UPDATE Symbol SET status=TRUE WHERE symb_name='" + name_+"'") == 1)
-                return true;
-            return false;
-        } catch (Exception ex) {System.err.println("app symbol err"); return false;}
-
-    }
-
-    public boolean del_symbol(String name_) {
-        try {
-            if (hh.executeUpdate("DELETE FROM Symbol WHERE symb_name='" + name_ + "'AND status = FALSE") == 1)
-                return true;
-            return false;
-        } catch (Exception ex) {System.err.println("delete symbol err"); return false;}
-
-    }
-
     public void add_property(int id,String name,int quantity){
         try {
             hh.executeUpdate("INSERT INTO Properties (cstmr_id,symb_name,amount) values (" + id + ",'" + name + "'," + quantity + ")");
@@ -217,23 +196,5 @@ public class Database {
         try {
             return Database.getDB().hh.executeQuery("Select * FROM Buyers WHERE symb_name='" + name_ + "' AND state=0 ORDER BY fund DESC");
         } catch (Exception ex) {System.out.println("err on getBuyer " + name_); return null;}
-    }
-
-    public Vector<String> get_profile(int id){
-        Vector<String> profile = new  Vector<String>();
-        try {
-            ResultSet rs = Database.getDB().get_user(id);
-            if (rs.next()) {
-                profile.add(rs.getString("name"));
-                profile.add(rs.getString("family"));
-                profile.add(rs.getString("fund"));
-                profile.add(rs.getString("role"));
-            }
-
-        }catch(Exception ex){
-            System.err.println("get user error in login");
-        }finally {
-            return profile;
-        }
     }
 }

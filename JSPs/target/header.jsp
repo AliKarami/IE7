@@ -29,24 +29,12 @@
   <% } %>
   <% if(db.LoggedInID != -1){ %>
   <a href="BuySell.jsp"> خرید و فروش </a> <hr>
-  <% } %>
-  <% if(db.LoggedInRole.equals("NO") || db.LoggedInRole.equals("AD")){ %>
   <a href="DepositWithdraw.jsp"> مدیریت اعتبار </a> <hr>
-  <% } %>
-   <% if(db.LoggedInRole.equals("BK") || db.LoggedInRole.equals("AD")){ %>
-   <a href="admin/requests">تایید درخواست اعتبار</a> <hr>
-   <% } %>
-  <% if(db.LoggedInID != -1){ %>
   <a href="Status.jsp"> وضعیت بازار </a> <hr>
-  <a href="Profile.jsp"> مشاهده پروفایل</a> <hr>
   <% } %>
-  <% if(db.LoggedInRole.equals("AD")){ %>
-  <a href="OtherProfile.jsp">   مشاهده پروفایل دیگر کاربران</a> <hr>
+  <% if(db.LoggedInID == 1){ %>
+  <a href="admin/requests">تایید درخواست اعتبار</a> <hr>
   <a href="Backup">تهیه پشتیبان</a> <hr>
-  <a href="ApproveSymbols.jsp">تایید درخواست اضافه کردن نماد جدید</a> <hr>
-  <% } %>
-  <% if(db.LoggedInRole.equals("BS") || db.LoggedInRole.equals("AD")){ %>
-  <a href="SymbolAdding.jsp">اضافه کردن نماد جدید</a> <hr>
   <% } %>
   <% if(db.LoggedInID != -1){ %>
   <a href="Logout.jsp"> خروج </a> <hr>
